@@ -8,4 +8,4 @@ if(a != 0):
     print("x är lika med",x)
 else:
     print('Inga lösningar')
-  
+print("Nya linen")
