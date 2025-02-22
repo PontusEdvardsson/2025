@@ -11,9 +11,9 @@ students = [
 # Each sublist represents a row in the classroom
 seating = [
     [3, 2],  # Back row
-    [2, 3, 2],  # Middle row 1
-    [2, 3, 2],  # Middle row 2
-    [2, 3, 2],  # Middle row 3
+    [2, 3, 2],  # Back Middle row
+    [2, 3, 2],  # Middle middle row 
+    [2, 3, 2],  # Front Middle row
     [2, 2]   # Front row
 ]
 

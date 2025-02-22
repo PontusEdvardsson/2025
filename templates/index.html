@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Arrangement</title>
+    <style>
+        .seat {
+            display: inline-block;
+            width: 100px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border: 1px solid #000;
+            cursor: move;
+            border-radius: 15px;
+            background-color: #ebab34;
+        }
+        .empty {
+            background-color: #f0f0f0;
+        }
+        .occupied {
+            background-color: #ebab34;
+        }
+        .not-selectable {
+            background-color: #d3d3d3;
+            cursor: not-allowed;
+        }
+        .seat:nth-child(2) {
+            margin-right: 20px; /* Larger gap between column 2 and 3 */
+        }
+        .seat:nth-child(3) {
+            margin-left: 20px; /* Larger gap between column 2 and 3 */
+        }
+        .seat:nth-child(5) {
+            margin-right: 20px; /* Larger gap between column 5 and 6 */
+        }
+        .seat:nth-child(6) {
+            margin-left: 20px; /* Larger gap between column 5 and 6 */
+        }
+        .seat:not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(5)):not(:nth-child(6)) {
+            margin: 5px; /* Smaller gaps for other columns */
+        }
+    </style>
+</head>
+<body>
+    <h1>Seating Arrangement</h1>
+    <div id="seating-grid"></div>
+    <script>
+        const students = [
+            "Inez", "Ellen", "Wilma", "Axel", "Ronja", "Lovisa", "Klara", "Marc", 
+            "Valter", "Hugo", "Noel", "Molly", "Tilda", "Novalee", "Maja", "Tuva", "Tina",
+            "Erik", "Ofelia", "Freja", "Lewis", "Malek", "Texas", "Noah", "Belle", "Ebba", "Kelian", "Malek"
+        ];
+
+        const seating = [
+            [0, 0, 3, 2],  // Back row
+            [2, 3, 2],  // Back Middle row
+            [2, 3, 2],  // Middle middle row 
+            [2, 3, 2],  // Front Middle row
+            [0, 0, 2, 0, 1, 2, 2]   // Front row
+        ];
+
+        function displaySeating(students, seating) {
+            const seatingGrid = document.getElementById('seating-grid');
+            let studentIndex = 0;
+            seating.forEach((row, rowIndex) => {
+                const rowDiv = document.createElement('div');
+                row.forEach((seat, seatIndex) => {
+                    const seatDiv = document.createElement('div');
+                    if (seat > 0) {
+                        seatDiv.className = 'seat occupied';
+                        seatDiv.draggable = true;
+                        seatDiv.id = `seat-${studentIndex}`;
+                        if (studentIndex < students.length) {
+                            seatDiv.textContent = students[studentIndex];
+                            seatDiv.dataset.student = students[studentIndex];
+                            studentIndex++;
+                        } else {
+                            seatDiv.textContent = 'Empty';
+                            seatDiv.dataset.student = 'Empty';
+                        }
+                        seatDiv.addEventListener('dragstart', handleDragStart);
+                        seatDiv.addEventListener('dragover', handleDragOver);
+                        seatDiv.addEventListener('drop', handleDrop);
+                    } else if (seat === 0 && (rowIndex === 0 && (seatIndex === 0 || seatIndex === 1) || rowIndex === 4 && (seatIndex === 0 || seatIndex === 1 || seatIndex === 4))) {
+                        seatDiv.className = 'seat not-selectable';
+                        seatDiv.textContent = 'Not Selectable';
+                        seatDiv.dataset.student = 'Not Selectable';
+                    } else {
+                        seatDiv.className = 'seat empty';
+                        seatDiv.textContent = 'Empty';
+                        seatDiv.dataset.student = 'Empty';
+                        seatDiv.draggable = true;
+                        seatDiv.addEventListener('dragstart', handleDragStart);
+                        seatDiv.addEventListener('dragover', handleDragOver);
+                        seatDiv.addEventListener('drop', handleDrop);
+                    }
+                    rowDiv.appendChild(seatDiv);
+                });
+                seatingGrid.appendChild(rowDiv);
+            });
+        }
+
+        function handleDragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.id);
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            const draggedSeatId = event.dataTransfer.getData('text/plain');
+            const draggedSeat = document.getElementById(draggedSeatId);
+            const targetSeat = event.target;
+
+            if (targetSeat.classList.contains('seat') && !targetSeat.classList.contains('not-selectable')) {
+                const draggedStudent = draggedSeat.dataset.student;
+                const targetStudent = targetSeat.dataset.student;
+
+                draggedSeat.textContent = targetStudent;
+                draggedSeat.dataset.student = targetStudent;
+
+                targetSeat.textContent = draggedStudent;
+                targetSeat.dataset.student = draggedStudent;
+            }
+        }
+
+        displaySeating(students, seating);
+    </script>
+</body>
+</html>
